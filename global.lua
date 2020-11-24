@@ -34,12 +34,12 @@ _GLOBAL.debug = function (value)
 end
 
 _GLOBAL.has_mod_enabled = function (player_index)
-  return _GLOBAL.get_player_setting(player_index, "enable")
+  return _GLOBAL.get_setting("player", "enable", player_index)
 end
 
 _GLOBAL.get_setting = function (setting_type, name, player_index)
   if setting_type == "player" and type(player_index) == "number" then
-    return settings.get_player_settings(game.get_player(player_index))[name]
+    return game.players[player_index].mod_settings[_GLOBAL.setting_name(name, "runtime-per-user")]
   end
 
   setting_type = _GLOBAL.mod.settings.types_names[setting_type]
@@ -49,7 +49,7 @@ end
 
 _GLOBAL.set_setting = function (setting_type, name, value, player_index)
   if setting_type == "player" and type(player_index) == "number" then
-    settings.get_player_settings(game.get_player(player_index))[name] = value
+    game.players[player_index].mod_settings[_GLOBAL.setting_name(name, "runtime-per-user")] = value
 
     return _GLOBAL.get_setting(setting_type, name, player_index)
   end
