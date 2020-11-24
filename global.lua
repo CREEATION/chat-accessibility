@@ -4,6 +4,11 @@ local _GLOBAL = {
     name = "chat_accessibility",
     title = "Chat Accessibility",
     sep = ":",
+    prototypes = {
+      types_names = {
+        ["custom-input"] = "input",
+      },
+    },
     settings = {
       types_names = {
         ["startup"] = "startup",
@@ -17,7 +22,7 @@ local _GLOBAL = {
         ["string-setting"] = "",
       },
       default_order = "a",
-    }
+    },
   }
 }
 
@@ -33,16 +38,24 @@ _GLOBAL.get_player_setting = function (player_index, setting_name)
   return game.players[player_index].mod_settings[_GLOBAL.setting_name(setting_name, "runtime-per-user")].value
 end
 
-_GLOBAL.setting_name = function (name, type)
+_GLOBAL._name = function (name, type, label)
   local mod = _GLOBAL.mod
 
   return table.concat({
     mod.namespace,
     mod.name,
-    "settings",
-    mod.settings.types_names[type],
+    label,
+    mod[label].types_names[type],
     name
   }, mod.sep)
+end
+
+_GLOBAL.prototype_name = function (name, type)
+  return _GLOBAL._name(name, type, "prototypes")
+end
+
+_GLOBAL.setting_name = function (name, type)
+  return _GLOBAL._name(name, type, "settings")
 end
 
 _GLOBAL.setting_default_value = function (setting)
@@ -166,6 +179,40 @@ _GLOBAL.settings = function (global_properties, settings)
   end
 
   return settings
+end
+
+_GLOBAL.prototypes = function (global_properties, prototypes)
+  -- set global properties & normalize default values
+  for global_property, global_value in pairs(global_properties) do
+    for i, _ in pairs(prototypes) do
+      prototypes[i][global_property] = global_value
+    end
+  end
+
+  -- transform prototype
+  for i, prototype in ipairs(prototypes) do
+    for property, value in pairs(prototypes[i]) do
+      -- set prototype name according to mod prototypes
+      if property == "name" then
+        prototypes[i].name = _GLOBAL.prototype_name(value, prototypes[i].type)
+      end
+    end
+
+    -- set key_sequence if not already set and type is "custom-input"
+    if prototype.type == "custom-input" then
+      if type(prototype.key_sequence) == "nil" then
+        prototypes[i].key_sequence = ""
+      end
+    end
+  end
+
+  return prototypes
+end
+
+_GLOBAL.event = function (event_name)
+  local mod = _GLOBAL.mod
+
+  return table.concat({ mod.namespace, mod.name, "prototypes", event_name }, mod.sep)
 end
 
 if type(global) == "nil" then
