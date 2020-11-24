@@ -37,16 +37,28 @@ _GLOBAL.has_mod_enabled = function (player_index)
   return _GLOBAL.get_player_setting(player_index, "enable")
 end
 
-_GLOBAL.get_startup_setting = function (setting_name)
-  return settings.startup[_GLOBAL.setting_name(setting_name, "startup")].value
+_GLOBAL.get_setting = function (setting_type, name, player_index)
+  if setting_type == "player" and type(player_index) == "number" then
+    return settings.get_player_settings(game.get_player(player_index))[name]
+  end
+
+  setting_type = _GLOBAL.mod.settings.types_names[setting_type]
+
+  return settings[setting_type][_GLOBAL.setting_name(name, setting_type)].value
 end
 
-_GLOBAL.get_global_setting = function (setting_name)
-  return settings.global[_GLOBAL.setting_name(setting_name, "runtime-global")].value
-end
+_GLOBAL.set_setting = function (setting_type, name, value, player_index)
+  if setting_type == "player" and type(player_index) == "number" then
+    settings.get_player_settings(game.get_player(player_index))[name] = value
 
-_GLOBAL.get_player_setting = function (player_index, setting_name)
-  return game.players[player_index].mod_settings[_GLOBAL.setting_name(setting_name, "runtime-per-user")].value
+    return _GLOBAL.get_setting(setting_type, name, player_index)
+  end
+
+  setting_type = _GLOBAL.mod.settings.types_names[setting_type]
+
+  settings[setting_type][_GLOBAL.setting_name(name, setting_type)] = value
+
+  return _GLOBAL.get_setting(setting_type, name, player_index)
 end
 
 _GLOBAL._name = function (name, type, label)

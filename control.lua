@@ -5,9 +5,9 @@ local features = {
   background = require("features.background")
 }
 
--- __DebugAdapter.print({ global.get_startup_setting("setting-name") })
--- __DebugAdapter.print({ global.get_global_setting("setting-name") })
--- __DebugAdapter.print({ global.get_player_setting(player_index, "setting-name") })
+-- global.debug({ global.get_setting("startup", "setting-name") })
+-- global.debug({ global.get_setting("global", "setting-name") })
+-- global.debug({ global.get_setting("player", "setting-name", player_index) })
 
 local has_console_open = function (player_index)
   return global.console_open[player_index]
@@ -19,12 +19,16 @@ local set_console_open = function (player_index, status)
   end
 
   if status == true then
+    -- console open
     features.background.draw(player_index)
   else
+    -- console closed
     features.background.destroy(player_index)
   end
 
   global.console_open[player_index] = status
+
+  return global.console_open[player_index]
 end
 
 -- game events
