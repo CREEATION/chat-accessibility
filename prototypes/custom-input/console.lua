@@ -17,7 +17,11 @@ data:extend(
       {
         name = "close-console",
         key_sequence = "ESCAPE",
-        alternative_key_sequence = "GRAVE",
+        hidden = true,
+      },
+      {
+        name = "destroy-console-background",
+        key_sequence = "ENTER",
       },
     }
   )

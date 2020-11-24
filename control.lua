@@ -44,7 +44,7 @@ script.on_init(
 script.on_event(
   {
     defines.events.on_console_chat,
-    defines.events.on_console_command
+    defines.events.on_console_command,
   },
   function (e)
     if global.has_mod_enabled(e.player_index) then
@@ -80,6 +80,20 @@ script.on_event(
         set_console_open(e.player_index, false)
 
         global.debug("> console closed")
+      end
+    end
+  end
+)
+
+-- wants to destroy console background
+script.on_event(
+  global.event("input", "destroy-console-background"),
+  function (e)
+    if global.has_mod_enabled(e.player_index) then
+      if has_console_open(e.player_index) then
+        set_console_open(e.player_index, false)
+
+        global.debug("> console background destroyed")
       end
     end
   end
