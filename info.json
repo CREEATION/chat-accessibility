@@ -6,5 +6,9 @@
   "factorio_version": "1.0",
   "homepage": "https://github.com/CREEATION/chat-accessibility",
   "name": "chat-accessibility",
-  "dependencies": ["(?) debugadapter >= 0.18.49", "(?) gvv >= 0.3.6"]
+  "dependencies": [
+    "base >= 1.0.0",
+    "(?) debugadapter >= 0.18.49",
+    "(?) gvv >= 0.3.6"
+  ]
 }
