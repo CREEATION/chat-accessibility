@@ -1,8 +1,9 @@
 local _GLOBAL = {
+  set = true,
   mod = {
+    debug = true,
     namespace = "c7",
-    name = "chat_accessibility",
-    title = "Chat Accessibility",
+    name = "chat-accessibility",
     sep = ":",
     prototypes = {
       types_names = {
@@ -25,6 +26,16 @@ local _GLOBAL = {
     },
   }
 }
+
+_GLOBAL.debug = function (value)
+  if _GLOBAL.mod.debug == true then
+    __DebugAdapter.print(value)
+  end
+end
+
+_GLOBAL.has_mod_enabled = function (player_index)
+  return _GLOBAL.get_player_setting(player_index, "enable")
+end
 
 _GLOBAL.get_startup_setting = function (setting_name)
   return settings.startup[_GLOBAL.setting_name(setting_name, "startup")].value
@@ -209,10 +220,16 @@ _GLOBAL.prototypes = function (global_properties, prototypes)
   return prototypes
 end
 
-_GLOBAL.event = function (event_name)
+_GLOBAL.event = function (event_type, event_name)
   local mod = _GLOBAL.mod
 
-  return table.concat({ mod.namespace, mod.name, "prototypes", event_name }, mod.sep)
+  return table.concat({
+    mod.namespace,
+    mod.name,
+    "prototypes",
+    event_type,
+    event_name
+  }, mod.sep)
 end
 
 if type(global) == "nil" then
